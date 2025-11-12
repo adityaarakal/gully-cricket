@@ -1,14 +1,19 @@
-# Expense Manager
+# Gully Cricket
 
-**A forward-looking financial projection and planning application** that provides insights into incomes, expenses, and expected balances for current and future months (5+ years ahead) to help users make informed financial decisions.
+**A comprehensive cricket match management and tracking application** for organizing gully cricket matches, tracking player and team statistics, managing tournaments, and building cricket communities.
 
-> **Core Purpose**: Project your financial future based on transaction history to answer key questions like "How much can I save?", "Can I afford this purchase?", "Should I buy on EMI or direct?", and "What's my available budget for daily expenses?"
+> **Core Purpose**: Manage informal cricket matches, track player performance, organize tournaments, and build cricket communities through comprehensive match management and statistics tracking.
 
 **Built with React, TypeScript, and domain-driven architecture.**
 
 ## 🚀 Features
 
-- **Domain-Driven Architecture**: Banking, Expenses, Income, Reports, User domains
+- **Match Management**: Live scoring, match history, scheduling, and results tracking
+- **Player & Team Management**: Player profiles, team rosters, statistics, and rankings
+- **Tournament Organization**: Tournament creation, fixture management, standings, and brackets
+- **Statistics & Analytics**: Comprehensive player and team statistics, performance trends, and records
+- **Community Features**: Match invitations, player discovery, team connections, and match sharing
+- **Domain-Driven Architecture**: Matches, Players, Teams, Tournaments, Statistics domains
 - **React 18** with TypeScript
 - **Vite** for fast development and building
 - **Local Storage** for data persistence
@@ -62,13 +67,14 @@ The project follows **domain-driven architecture**:
 ```
 src/
 ├── domains/           # Domain-driven architecture
-│   ├── banking/       # Banking domain (banks, accounts, credit cards, EMIs)
-│   ├── expenses/      # Expenses domain (expenses, categories, filtering)
-│   ├── income/        # Income domain (income sources, tracking)
-│   ├── reports/       # Reports domain (financial reports, analytics)
-│   └── user/          # User domain (user management, preferences)
+│   ├── matches/       # Matches domain (scoring, history, scheduling)
+│   ├── players/       # Players domain (profiles, stats, rankings)
+│   ├── teams/         # Teams domain (rosters, management, stats)
+│   ├── tournaments/   # Tournaments domain (fixtures, standings, brackets)
+│   ├── statistics/    # Statistics domain (analytics, trends, records)
+│   └── community/     # Community domain (invitations, discovery, sharing)
 ├── shared/            # Shared utilities (validation, formatters, API)
-├── pages/             # Page components (dashboard, expenses, reports, etc.)
+├── pages/             # Page components (dashboard, matches, players, teams, tournaments)
 ├── components/        # Shared UI components
 ├── hooks/             # Shared hooks
 ├── utils/             # Utility functions
@@ -77,9 +83,9 @@ src/
 
 ## 🔧 Available Scripts
 
-- `npm run dev` - Start development server
+- `npm run dev` - Start development server (port 11616)
 - `npm run build` - Build for production
-- `npm run preview` - Preview production build
+- `npm run preview` - Preview production build (port 11616)
 - `npm run test` - Run tests
 - `npm run test:coverage` - Run tests with 80% coverage requirement
 - `npm run lint` - Run ESLint (0 errors, 0 warnings)
@@ -98,6 +104,12 @@ This project enforces **strict development standards**:
 - ✅ **File extension strictness** (.tsx for components, .ts for others)
 - ✅ **Code reusability** maximized
 - ✅ **Pre-commit hooks** block non-compliant code
+
+## 🏏 About Gully Cricket
+
+**Gully Cricket** is informal street cricket played in narrow alleys (gullies) or small spaces, popular in India and South Asian countries. It features modified rules adapted for small playing areas and is a grassroots form of cricket that brings communities together.
+
+This application brings professional match management tools to this grassroots cricket culture, helping players and teams organize, track, and improve their game.
 
 ## 📖 Contributing
 

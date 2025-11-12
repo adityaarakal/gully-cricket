@@ -2,78 +2,91 @@
 
 ## 🎯 Core Purpose
 
-**Expense Manager is a forward-looking financial projection and planning application** that helps users understand their financial future and make informed decisions based on their transaction history.
+**Gully Cricket is a comprehensive cricket match management and tracking application** that helps players, teams, and organizers manage informal cricket matches, track statistics, organize tournaments, and build cricket communities.
 
 ## 📊 Primary Goal
 
-The application provides **insights into incomes, expenses, and expected balances** after accounting for expected income and expected expenses for **current and future months, projecting at least 5 years ahead** based on the transactions users add.
+The application provides **complete match management, player statistics, team organization, and tournament tracking** for gully cricket (informal street cricket) played in neighborhoods, helping users organize games, track performance, and build competitive cricket communities.
 
 ## 🧭 Core Functionality
 
-### Financial Projections
-- **Current Month Projections**: See what to expect in the upcoming month
-- **Future Month Projections**: Plan ahead for the next 60+ months (5+ years)
-- **Expected Balances**: Calculate balances after expected income and expenses
-- **Income Tracking**: Record and project all income sources
-- **Expense Tracking**: Record and project all expenses
+### Match Management
+- **Live Scoring**: Real-time score tracking during matches
+- **Match History**: Complete record of all matches played
+- **Match Scheduling**: Organize and schedule upcoming matches
+- **Match Results**: Track wins, losses, and match outcomes
+- **Player Performance**: Individual player statistics per match
 
-### Decision Support
-The application helps users make informed financial decisions by answering key questions:
+### Team & Player Management
+- **Team Creation**: Form and manage cricket teams
+- **Player Profiles**: Track individual player information and stats
+- **Team Rosters**: Manage team lineups and player assignments
+- **Player Statistics**: Batting averages, bowling figures, fielding stats
+- **Player Rankings**: Leaderboards and performance rankings
 
-1. **Savings Planning**
-   - How much can I save this month?
-   - How much will I save in future months?
+### Tournament Organization
+- **Tournament Creation**: Set up and manage cricket tournaments
+- **Fixture Management**: Schedule matches and manage tournament brackets
+- **Standings & Points**: Track team standings and tournament points
+- **Knockout Stages**: Manage playoff and final matches
+- **Tournament History**: Archive of past tournaments
 
-2. **Expenditure Planning**
-   - How much can I spend this month?
-   - What's my available budget after accounting for all expenses?
+### Statistics & Analytics
+- **Player Stats**: Batting, bowling, and fielding statistics
+- **Team Stats**: Team performance metrics and win/loss records
+- **Match Analytics**: Detailed match analysis and insights
+- **Performance Trends**: Track improvement over time
+- **Records & Achievements**: Milestones and record tracking
 
-3. **Daily Expense Management**
-   - How much can I allocate for daily expenses?
-   - What's my disposable income after all commitments?
-
-4. **Purchase Decisions**
-   - Can I afford to buy this item now?
-   - Should I buy on EMI or make a direct purchase?
-   - What's the impact of this purchase on my future balances?
-
-### Key Features
-- **Transaction Recording**: Add and track all income and expense transactions
-- **Multi-Month Projections**: View financial outlook for current and future months
-- **Balance Forecasting**: Calculate expected balances after income and expenses
-- **Long-term Planning**: 5+ year financial projections
-- **Decision Support**: EMI vs direct purchase analysis and recommendations
+### Community Features
+- **Match Invitations**: Invite players and teams to matches
+- **Match Notifications**: Stay updated on upcoming matches
+- **Player Search**: Find and connect with other players
+- **Team Discovery**: Find teams looking for players
+- **Match Highlights**: Share and view match highlights
 
 ## 🎯 Development Principle
 
-> **"This is all about projections into future and current months with the transactions I keep on recording"**
+> **"This is all about managing gully cricket matches, tracking player and team performance, organizing tournaments, and building cricket communities through comprehensive match management and statistics"**
 
 **Every feature, every enhancement, and every decision must align with this core purpose:**
 
-1. ✅ **Supports financial projections** (current and future)
-2. ✅ **Enables informed decision-making** (savings, expenditures, purchases)
-3. ✅ **Uses transaction history** as the foundation
-4. ✅ **Provides visibility** into months ahead (minimum 5 years)
+1. ✅ **Supports match management** (scoring, scheduling, results)
+2. ✅ **Enables player and team tracking** (statistics, profiles, rosters)
+3. ✅ **Facilitates tournament organization** (fixtures, standings, brackets)
+4. ✅ **Provides statistical insights** (performance analytics, trends, records)
+5. ✅ **Builds cricket communities** (connections, invitations, sharing)
 
 ## 📋 Feature Prioritization
 
 When planning new features or enhancements, prioritize:
 
-1. **High Priority**: Features that directly support financial projections and forecasting
-2. **Medium Priority**: Features that improve transaction recording and tracking
-3. **Lower Priority**: Features that don't contribute to the core projection functionality
+1. **High Priority**: Features that directly support match management and scoring
+2. **High Priority**: Player and team statistics tracking
+3. **Medium Priority**: Tournament organization and management
+4. **Medium Priority**: Community features and social interactions
+5. **Lower Priority**: Advanced analytics and reporting features
 
 ## 🚀 Future Development Guidelines
 
 All future development should:
 
-- ✅ Enhance the projection accuracy and visibility
-- ✅ Improve transaction recording and categorization
-- ✅ Provide better insights for decision-making
-- ✅ Support longer-term financial planning
-- ✅ Enable smarter purchase and savings decisions
+- ✅ Enhance match management and scoring accuracy
+- ✅ Improve player and team statistics tracking
+- ✅ Provide better insights for performance analysis
+- ✅ Support larger tournaments and league management
+- ✅ Enable better community engagement and match discovery
+
+## 🏏 Gully Cricket Context
+
+**Gully Cricket** refers to informal street cricket played in narrow alleys (gullies) or small spaces, popular in India and South Asian countries. It features:
+- Modified rules adapted for small playing areas
+- Makeshift equipment (tennis ball, wooden bat)
+- Neighborhood-based matches
+- Grassroots cricket culture
+
+This application brings **professional match management** to this grassroots cricket culture, helping players and teams organize, track, and improve their game.
 
 ---
 
-**Remember**: This application is not just about tracking expenses—it's about **projecting your financial future** and making informed decisions based on those projections.
-
+**Remember**: This application is not just about tracking matches—it's about **managing gully cricket communities, tracking performance, organizing tournaments, and building a comprehensive cricket management ecosystem** for informal cricket players.

@@ -1,0 +1,58 @@
+@import './variables';
+@import './mixins';
+
+// Theme variables
+$primary-color: $primary-main;
+$secondary-color: $secondary-main;
+$accent-color: #330060;
+
+// Basic theme styles
+body {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-header {
+  background-color: $primary-color;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.layout-nav {
+  display: flex;
+  gap: 1rem;
+  
+  a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.layout-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+.layout-footer {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
