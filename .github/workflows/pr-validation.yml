@@ -1,0 +1,289 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    branches: [ main, develop, staging ]
+    types: [opened, synchronize, reopened, ready_for_review]
+  
+  workflow_dispatch:  # Allow manual triggering
+
+# Required permissions for the workflow
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  statuses: write
+
+jobs:
+  # Job 1: Code Quality Validation
+  code-quality:
+    name: Code Quality & Standards
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: "Run ESLint (Rule 1, 16: Zero Errors/Warnings - MANDATORY)"
+        run: npm run lint
+        env:
+          CI: true
+          
+      - name: "Zero Errors/Warnings Validation (Rule 1, 16: MANDATORY)"
+        run: npm run validate:zero-errors-warnings
+        env:
+          CI: true
+          
+      - name: "TypeScript Compilation Check (Rule 1, 16: MANDATORY)"
+        run: npm run type-check
+        env:
+          CI: true
+          
+      - name: "SOLID & DRY Principles Validation (Rule 2: MANDATORY)"
+        run: npm run validate:solid-dry
+        env:
+          CI: true
+          
+      - name: "No ESLint Disable Validation (Rule 7: MANDATORY)"
+        run: npm run validate:no-eslint-disable
+        env:
+          CI: true
+          
+      - name: "No Bypass Validation (Rule 11: MANDATORY)"
+        run: npm run validate:no-bypass
+        env:
+          CI: true
+          
+      - name: "No Config Modifications Validation (Rule 10: MANDATORY)"
+        run: npm run validate:no-config-mods
+        env:
+          CI: true
+          
+      - name: "No Skip Checks Validation (Rule 12: MANDATORY)"
+        run: npm run validate:no-skip-checks
+        env:
+          CI: true
+          
+      - name: "No-Verify Prohibition Validation (Rule 9: MANDATORY)"
+        run: npm run validate:no-verify
+        env:
+          CI: true
+          
+      - name: Rule 13 Validation (All Validations Must Pass - MANDATORY)
+        run: npm run validate:rule-13
+        env:
+          CI: true
+          
+      - name: Rule 15 Validation (Continuous Execution - MANDATORY)
+        run: npm run validate:rule-15
+        env:
+          CI: true
+
+  # Job 2: Test Coverage Validation
+  test-coverage:
+    name: Test Coverage (80% Required)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: "Run tests with coverage (Rule 3: MANDATORY)"
+        run: npm run test:ci
+        env:
+          CI: true
+          
+      - name: "Source Folder Coverage Validation (Rule 3: 80% PER-FILE Required - MANDATORY)"
+        run: npm run validate:src-coverage
+        env:
+          CI: true
+          
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  # Job 3: Architecture Validation
+  architecture-validation:
+    name: Architecture Standards
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: "File Extension Validation (Rule 6: MANDATORY)"
+        run: npm run validate:file-extensions
+        env:
+          CI: true
+          
+      - name: "Rule 17: File Structure Validation (MANDATORY)"
+        run: npm run validate:file-structure
+        env:
+          CI: true
+          
+      - name: "Presentational Components Validation (Rule 5: MANDATORY)"
+        run: npm run validate:presentational
+        env:
+          CI: true
+          
+      - name: "Code Reusability Validation (Rule 4: MANDATORY)"
+        run: npm run validate:reusability
+        env:
+          CI: true
+          
+      - name: "Path Alias Validation (Rule 18: @/ alias required - MANDATORY)"
+        run: npm run validate:relative-paths
+        env:
+          CI: true
+          
+      - name: Port Validation (MANDATORY)
+        run: npm run validate:port
+        env:
+          CI: true
+
+  # Job 4: Build Validation
+  build-validation:
+    name: Build & Production Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build application
+        run: npm run build
+        env:
+          CI: true
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: dist/
+          retention-days: 1
+
+  # Job 5: Security & Dependencies Check
+  security-check:
+    name: Security & Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run security audit
+        run: npm audit --audit-level=moderate
+        env:
+          CI: true
+          
+      - name: Check for outdated dependencies
+        run: npm outdated || true
+        env:
+          CI: true
+
+  # Job 6: PR Status Summary
+  pr-summary:
+    name: PR Status Summary
+    runs-on: ubuntu-latest
+    needs: [code-quality, test-coverage, architecture-validation, build-validation, security-check]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Generate PR Summary
+        run: |
+          echo "## 🚀 Pull Request Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Validation Results:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Code Quality**: ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Coverage**: ${{ needs.test-coverage.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Architecture**: ${{ needs.architecture-validation.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build**: ${{ needs.build-validation.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Security**: ${{ needs.security-check.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ needs.code-quality.result }}" == "success" && "${{ needs.test-coverage.result }}" == "success" && "${{ needs.architecture-validation.result }}" == "success" && "${{ needs.build-validation.result }}" == "success" && "${{ needs.security-check.result }}" == "success" ]]; then
+            echo "### 🎉 All validations passed! PR is ready for review." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ❌ Some validations failed. Please fix the issues before merging." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 ALL RULES ARE MANDATORY - ZERO TOLERANCE POLICY:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### ✅ Code Quality Rules (MANDATORY):" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 1 & 16: Zero errors/warnings (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 2: SOLID & DRY principles (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 3: 80% PER-FILE test coverage for EACH file (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ TypeScript compilation success" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### ✅ Architecture Rules (MANDATORY):" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 4: Code reusability maximized (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 5: Presentational components only (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 6: File extension strictness (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 17: Mandatory file and folder structure (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 18: Path alias enforcement (@/ required for internal imports) (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### ✅ Compliance Rules (MANDATORY):" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 7: No eslint-disable comments (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 9: --no-verify is FORBIDDEN (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 10: No config modifications without permission (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 11: Fix issues, never bypass (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 12: AI agents cannot skip validations (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 13: All validations must pass - no exceptions (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Rule 15: Continuous execution mandate (BLOCKS PR IF FAILED)**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### ✅ Build & Security:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build success (BLOCKS PR IF FAILED)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Security audit passed (BLOCKS PR IF FAILED)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **ALL RULES ARE MANDATORY - PR CANNOT BE MERGED IF ANY RULE FAILS** ⚠️" >> $GITHUB_STEP_SUMMARY

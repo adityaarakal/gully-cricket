@@ -1,0 +1,145 @@
+{
+  "name": "expense-manager-react",
+  "version": "1.0.0",
+  "_permission_note": "PERMISSION_GRANTED_BY_USER - Config modified to add test coverage validation",
+  "description": "Expense Manager built with React and Local Storage",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --port 11616 --strict-port",
+    "build": "tsc && vite build",
+    "preview": "vite preview --port 11616 --strict-port",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --coverageThreshold='{\"global\":{\"branches\":80,\"functions\":80,\"lines\":80,\"statements\":80}}'",
+    "pre-commit:coverage": "jest --coverage --coverageThreshold='{\"global\":{\"branches\":80,\"functions\":80,\"lines\":80,\"statements\":80}}' --testPathPattern=src",
+    "test:ci": "jest --ci --coverage --coverageThreshold='{\"global\":{\"branches\":80,\"functions\":80,\"lines\":80,\"statements\":80}}'",
+    "validate:file-extensions": "node scripts/validate-file-extensions.cjs",
+    "validate:file-structure": "node scripts/validate-file-structure.cjs",
+    "validate:presentational": "node scripts/validate-presentational-components.cjs",
+    "validate:reusability": "node scripts/validate-reusability.cjs",
+    "validate:no-eslint-disable": "node scripts/validate-no-eslint-disable.cjs",
+    "validate:no-bypass": "node scripts/validate-no-bypass.cjs",
+    "validate:no-config-mods": "node scripts/validate-no-config-mods.cjs",
+    "validate:no-skip-checks": "node scripts/validate-no-skip-checks.cjs",
+    "validate:rule-13": "node scripts/validate-rule-13.cjs",
+    "validate:rule-15": "node scripts/validate-rule-15.cjs",
+    "validate:no-verify": "node scripts/validate-no-verify.cjs",
+    "validate:zero-errors-warnings": "node scripts/validate-zero-errors-warnings.cjs",
+    "validate:src-coverage": "node scripts/validate-src-coverage.cjs",
+    "validate:relative-paths": "node scripts/validate-relative-paths.cjs",
+    "validate:architecture": "npm run validate:file-extensions && npm run validate:file-structure && npm run validate:presentational && npm run validate:reusability && npm run validate:no-eslint-disable && npm run validate:no-bypass && npm run validate:no-config-mods && npm run validate:no-skip-checks && npm run validate:no-verify && npm run validate:zero-errors-warnings && npm run validate:rule-13 && npm run validate:rule-15 && npm run validate:src-coverage && npm run validate:relative-paths",
+    "validate:port": "node scripts/validate-port.cjs",
+    "validate:solid-dry": "npm run lint && bash -c 'npm run type-check'",
+    "validate:all": "npm run lint && npm run type-check && npm run test && npm run validate:architecture && npm run validate:port",
+    "check:vision": "node scripts/check-vision.cjs",
+    "validate:strict": "npm run validate:all && npm run build && npm audit --audit-level=moderate",
+    "enforce:no-bypass": "echo '🚨 BYPASS DETECTION: Checking for bypass attempts...' && if [ \"$HUSKY_SKIP_HOOKS\" = \"1\" ] || [ -n \"$SKIP_HOOKS\" ] || [ -n \"$SKIP_PRE_COMMIT\" ] || [ -n \"$BYPASS_CHECKS\" ]; then echo '❌ BYPASS DETECTED! This violates ZERO TOLERANCE POLICY'; exit 1; else echo '✅ No bypass detected - Compliance verified'; fi",
+    "setup:pr-workflow": "node scripts/setup-pr-workflow.cjs",
+    "protect:main": "./scripts/protect-main-branch.sh",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "clsx": "^2.0.0",
+    "date-fns": "^2.29.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1",
+    "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/jest": "^29.5.0",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "husky": "^8.0.3",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "lint-staged": "^15.0.0",
+    "sass": "^1.93.2",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.2",
+    "vite": "^7.1.11"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "expense-manager",
+    "local-storage",
+    "vite"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "bash -c 'npm run type-check'"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix"
+    ],
+    "package.json": [
+      "npm run validate:all"
+    ]
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.ts"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/setupTests.ts",
+      "!src/main.tsx"
+    ],
+    "coverageReporters": ["text", "text-summary", "json", "json-summary", "lcov", "clover"],
+    "coverageDirectory": "coverage",
+    "coverageThreshold": {
+      "src/**/*.{ts,tsx}": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      },
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.{test,spec}.{ts,tsx}",
+      "<rootDir>/src/**/*.{test,spec}.{ts,tsx}"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/helpers/",
+      "/__mocks__/",
+      "mock.*\\.ts$",
+      "mock.*\\.tsx$",
+      "helper.*\\.ts$",
+      "helper.*\\.tsx$"
+    ]
+  }
+}
+

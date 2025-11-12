@@ -1,0 +1,351 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# ============================================================================
+# STRICT COMPLIANCE ENFORCEMENT - NO BYPASSING ALLOWED
+# ============================================================================
+
+echo "🚨 STRICT COMPLIANCE CHECK - ZERO TOLERANCE POLICY"
+echo "⚠️  NO BYPASSING METHODS ALLOWED - ALL CHECKS MUST PASS"
+echo ""
+
+# ============================================================================
+# ABSOLUTE PROHIBITION: --no-verify DETECTION
+# ============================================================================
+# Check if --no-verify was used (this should never happen if hook is called)
+# But we check anyway to be absolutely certain
+echo "🔍 Checking for --no-verify usage..."
+if [ "$HUSKY_SKIP_HOOKS" = "1" ]; then
+    echo "❌ CRITICAL ERROR: Pre-commit hooks were bypassed!"
+    echo "❌ This violates the ZERO TOLERANCE POLICY"
+    echo "❌ All commits MUST pass all validation checks"
+    echo ""
+    echo "🔒 ENFORCEMENT: Commit blocked due to bypass attempt"
+    echo "📋 REQUIRED: Fix all issues and commit without bypassing"
+    echo ""
+    exit 1
+fi
+
+# Check command line arguments for --no-verify
+# This is a safety check - if we're here, the hook is running
+# But we check parent processes for any --no-verify flags
+if ps -p $PPID -o args= 2>/dev/null | grep -q '--no-verify'; then
+    echo "❌ CRITICAL ERROR: --no-verify flag detected in commit command!"
+    echo "❌ ABSOLUTE PROHIBITION: --no-verify is FORBIDDEN at all costs"
+    echo "❌ NO EXCEPTIONS - NOT EVEN WITH USER PERMISSION"
+    echo ""
+    echo "🔒 ENFORCEMENT: Commit blocked - --no-verify is ABSOLUTELY PROHIBITED"
+    echo "📋 REQUIRED: Fix all issues and commit without --no-verify"
+    echo "📋 RULE VIOLATION: This violates Rule 9 - Zero bypassing tolerance"
+    echo ""
+    exit 1
+fi
+
+# Check for other bypassing methods
+if [ -n "$SKIP_HOOKS" ] || [ -n "$SKIP_PRE_COMMIT" ] || [ -n "$BYPASS_CHECKS" ]; then
+    echo "❌ CRITICAL ERROR: Bypass flags detected!"
+    echo "❌ Detected bypass flags: SKIP_HOOKS, SKIP_PRE_COMMIT, or BYPASS_CHECKS"
+    echo "❌ This violates the ZERO TOLERANCE POLICY"
+    echo ""
+    echo "🔒 ENFORCEMENT: Commit blocked due to bypass attempt"
+    exit 1
+fi
+
+# Prevent commits to main branch
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$current_branch" = "main" ]; then
+  echo "❌ Error: Direct commits to main branch are not allowed!"
+  echo "Please create a feature branch and submit a pull request instead."
+  echo ""
+  echo "🔒 ENFORCEMENT: Main branch is protected"
+  echo "📋 REQUIRED: Use feature branches and PR workflow"
+  exit 1
+fi
+
+echo "🚀 Running comprehensive pre-commit validation..."
+echo "This ensures the same quality standards as the PR workflow."
+echo "⚠️  ZERO TOLERANCE - ALL CHECKS MUST PASS"
+echo ""
+
+# ============================================================================
+# STEP 1: CODE QUALITY & STANDARDS (ZERO TOLERANCE)
+# ============================================================================
+echo "📋 Step 1/6: Code Quality & Standards (ZERO TOLERANCE)"
+echo "Running ESLint validation..."
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: ESLint errors or warnings found. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL ESLint errors and warnings must be fixed before commit."
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix ESLint errors and warnings first"
+  echo "📋 REQUIRED: Run 'npm run lint' and fix ALL errors/warnings"
+  exit 1
+fi
+
+echo "Running zero errors/warnings validation (Rule 16: ALL errors and warnings must be fixed)..."
+npm run validate:zero-errors-warnings
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Errors or warnings detected. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL errors and warnings must be fixed before commit."
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix ALL errors and warnings first"
+  echo "📋 REQUIRED: Run 'npm run validate:zero-errors-warnings' and fix ALL errors/warnings"
+  echo "📋 REQUIRED: Rule 16 compliance required - ZERO errors and warnings allowed"
+  exit 1
+fi
+
+echo "Running TypeScript compilation check..."
+npm run type-check
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: TypeScript compilation errors found. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL TypeScript errors must be fixed before commit."
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix TypeScript errors first"
+  echo "📋 REQUIRED: Run 'npm run type-check' and fix ALL errors"
+  exit 1
+fi
+
+echo "Running SOLID & DRY principles validation..."
+npm run validate:solid-dry
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: SOLID & DRY principles validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL architectural violations must be fixed before commit."
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix architectural issues first"
+  echo "📋 REQUIRED: Run 'npm run validate:solid-dry' and fix ALL violations"
+  exit 1
+fi
+
+echo "✅ Code Quality & Standards passed!"
+echo ""
+
+# ============================================================================
+# STEP 2: TEST COVERAGE (80% PER-FILE REQUIRED)
+# ============================================================================
+echo "📋 Step 2/6: Test Coverage (80% Per-File Required)"
+echo "Running tests with coverage..."
+# Note: Coverage validation is now enforced in Step 3 (validate:src-coverage)
+# Running basic test suite without coverage threshold check here
+npm run test
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Tests failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ All tests must pass before commit."
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix failing tests first"
+  exit 1
+fi
+
+echo "✅ Test suite passed!"
+echo ""
+
+# ============================================================================
+# STEP 3: ARCHITECTURE STANDARDS (ZERO TOLERANCE)
+# ============================================================================
+echo "📋 Step 3/6: Architecture Standards (Zero Tolerance)"
+echo "Running file extension validation..."
+npm run validate:file-extensions
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: File extension validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Only components can use .tsx, all others must use .ts"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix file extensions first"
+  echo "📋 REQUIRED: Run 'npm run validate:file-extensions' and fix ALL violations"
+  exit 1
+fi
+
+echo "Running file structure validation (Rule 17: Mandatory file and folder structure)..."
+npm run validate:file-structure
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: File structure validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL files must follow Rule 17 hybrid component-based structure"
+  echo "❌ Component-specific code must be co-located, shared code in type-based folders"
+  echo "❌ Tests must be co-located with source files"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix file structure first"
+  echo "📋 REQUIRED: Run 'npm run validate:file-structure' and fix ALL violations"
+  echo "📋 REQUIRED: Refer to Rule 17 in DEVELOPMENT_STANDARDS.md for structure requirements"
+  exit 1
+fi
+
+echo "Running presentational components validation..."
+npm run validate:presentational
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Presentational components validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Components must be presentational only - no business logic"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix component architecture first"
+  echo "📋 REQUIRED: Run 'npm run validate:presentational' and fix ALL violations"
+  exit 1
+fi
+
+echo "Running code reusability validation..."
+npm run validate:reusability
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Code reusability validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Maximum code reuse is REQUIRED - no duplicate implementations"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix reusability issues first"
+  echo "📋 REQUIRED: Run 'npm run validate:reusability' and fix ALL violations"
+  exit 1
+fi
+
+echo "Running no eslint-disable validation..."
+npm run validate:no-eslint-disable
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: No eslint-disable validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ NO eslint-disable comments allowed - fix all violations"
+  echo "🔒 ENFORCEMENT: Commit blocked - Remove all eslint-disable comments"
+  echo "📋 REQUIRED: Run 'npm run validate:no-eslint-disable' and fix ALL violations"
+  exit 1
+fi
+
+echo "Running no bypass validation..."
+npm run validate:no-bypass
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: No bypass validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Fix issues, never bypass - refactor code to comply"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix code instead of bypassing rules"
+  echo "📋 REQUIRED: Run 'npm run validate:no-bypass' and fix ALL violations"
+  exit 1
+fi
+
+echo "Running no config modifications validation..."
+npm run validate:no-config-mods
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: No config modifications validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Config files modified without permission - explicit permission required"
+  echo "🔒 ENFORCEMENT: Commit blocked - Add permission marker to commit message"
+  echo "📋 REQUIRED: Include 'PERMISSION_GRANTED_BY_USER' in commit message"
+  exit 1
+fi
+
+echo "Running no skip checks validation (Rule 12: AI agents cannot skip validation)..."
+npm run validate:no-skip-checks
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: No skip checks validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ AI agents are ABSOLUTELY PROHIBITED from skipping or bypassing any validation checks"
+  echo "❌ ALL validation checks must remain active at all times - no exceptions"
+  echo "🔒 ENFORCEMENT: Commit blocked - Remove all skip/disable patterns"
+  echo "📋 REQUIRED: Fix issues instead of skipping validations"
+  echo "📋 REQUIRED: Rule 12 compliance required - AI agents cannot skip checks"
+  exit 1
+fi
+
+echo "Running --no-verify prohibition validation (Rule 9: --no-verify is ABSOLUTELY FORBIDDEN)..."
+npm run validate:no-verify
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: --no-verify validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ABSOLUTE PROHIBITION: --no-verify is FORBIDDEN at all costs"
+  echo "❌ NO EXCEPTIONS - NOT EVEN WITH USER PERMISSION"
+  echo "❌ NO ONE CAN USE --no-verify - Not users, not AI agents, not anyone"
+  echo "🔒 ENFORCEMENT: Commit blocked - --no-verify is ABSOLUTELY PROHIBITED"
+  echo "📋 REQUIRED: Fix all issues and commit without --no-verify"
+  echo "📋 REQUIRED: Rule 9 compliance required - --no-verify is FORBIDDEN"
+  exit 1
+fi
+
+echo "Running Rule 13 validation (All validations must pass - no exceptions, not even with user permission)..."
+npm run validate:rule-13
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Rule 13 validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL validations MUST pass - NO EXCEPTIONS - NOT EVEN WITH USER PERMISSION"
+  echo "❌ User permission DOES NOT allow skipping or bypassing any validation checks"
+  echo "❌ NO ONE can skip validations - not users, not AI agents, not anyone"
+  echo "🔒 ENFORCEMENT: Commit blocked - ALL validations must pass"
+  echo "📋 REQUIRED: Fix all validation issues - DO NOT skip or bypass"
+  echo "📋 REQUIRED: Rule 13 compliance required - ALL validations must pass"
+  exit 1
+fi
+
+echo "Running Rule 15 validation (Continuous execution - AI agents must work uninterrupted)..."
+npm run validate:rule-15
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Rule 15 validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Rule 15 must be prominently displayed and AI agents must be aware"
+  echo "❌ AI agents MUST continue executing tasks without stopping for permission"
+  echo "❌ NO mid-task interruptions - work systematically until all issues are resolved"
+  echo "🔒 ENFORCEMENT: Commit blocked - Rule 15 documentation must be correct"
+  echo "📋 REQUIRED: Rule 15 compliance required - AI agents must work uninterrupted"
+  exit 1
+fi
+
+echo "Running src folder coverage validation (80% PER-FILE required)..."
+npm run validate:src-coverage
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Per-file coverage validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ 80% PER-FILE test coverage is REQUIRED for EACH file individually - no exceptions"
+  echo "❌ Each file must have 80% for ALL metrics: statements, functions, branches, lines"
+  echo "🔒 ENFORCEMENT: Commit blocked - Write unit tests for files with insufficient coverage"
+  echo "📋 REQUIRED: Run 'npm run validate:src-coverage' and ensure 80% coverage for EACH file"
+  exit 1
+fi
+
+echo "Running path alias validation (Rule 18: @/ alias required for internal imports)..."
+npm run validate:relative-paths
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Path alias validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL internal imports MUST use @/ alias - relative paths (../, ./) are FORBIDDEN"
+  echo "❌ External packages (react, react-dom, etc.) are allowed as-is"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix path imports first"
+  echo "📋 REQUIRED: Run 'npm run validate:relative-paths' and fix ALL violations"
+  echo "📋 REQUIRED: Replace all relative paths with @/ aliases (e.g., @/domains/...)"
+  echo "📋 REQUIRED: Refer to Rule 18 in DEVELOPMENT_STANDARDS.md for requirements"
+  exit 1
+fi
+
+echo "✅ Architecture Standards validation passed!"
+echo ""
+
+# ============================================================================
+# STEP 4: BUILD VALIDATION (ZERO TOLERANCE)
+# ============================================================================
+echo "📋 Step 4/6: Build & Production Check (Zero Tolerance)"
+echo "Running production build validation..."
+npm run build
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Build validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Production build must succeed - no build errors allowed"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix build errors first"
+  echo "📋 REQUIRED: Run 'npm run build' and fix ALL build errors"
+  exit 1
+fi
+
+echo "✅ Build validation passed!"
+echo ""
+
+# ============================================================================
+# STEP 5: SECURITY & DEPENDENCIES CHECK (ZERO TOLERANCE)
+# ============================================================================
+echo "📋 Step 5/6: Security & Dependencies (Zero Tolerance)"
+echo "Running security audit..."
+npm audit --audit-level=moderate
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Security audit failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ Security vulnerabilities must be fixed before commit"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix security issues first"
+  echo "📋 REQUIRED: Run 'npm audit' and fix ALL security vulnerabilities"
+  exit 1
+fi
+
+echo "✅ Security audit passed!"
+echo ""
+
+# ============================================================================
+# STEP 6: FINAL COMPREHENSIVE VALIDATION
+# ============================================================================
+echo "📋 Step 6/6: Final Comprehensive Validation"
+echo "Running complete validation suite..."
+npm run validate:all
+if [ $? -ne 0 ]; then
+  echo "❌ CRITICAL: Comprehensive validation failed. ZERO TOLERANCE POLICY ENFORCED."
+  echo "❌ ALL validation checks must pass before commit"
+  echo "🔒 ENFORCEMENT: Commit blocked - Fix ALL validation issues first"
+  echo "📋 REQUIRED: Run 'npm run validate:all' and fix ALL issues"
+  exit 1
+fi
+
+echo "✅ Comprehensive validation passed!"
+echo ""
+
+# ============================================================================
+# SUCCESS - ALL CHECKS PASSED
+# ============================================================================
+echo "🎉 ALL PRE-COMMIT VALIDATIONS PASSED!"
+echo "✅ ZERO TOLERANCE POLICY COMPLIANCE ACHIEVED"
+echo "✅ Your code meets ALL quality standards"
+echo "✅ Ready to commit!"
+echo ""
+echo "🔒 ENFORCEMENT STATUS: COMPLIANT"
+echo "📋 POLICY: ZERO TOLERANCE - NO BYPASSING ALLOWED"
+echo "✅ RESULT: Commit approved - All standards met"

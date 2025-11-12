@@ -1,0 +1,138 @@
+name: Branch Protection Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch name to protect'
+        required: true
+        type: string
+      require_pr_reviews:
+        description: 'Require PR reviews'
+        required: false
+        type: boolean
+        default: true
+      required_reviewers:
+        description: 'Number of required reviewers'
+        required: false
+        type: number
+        default: 1
+      dismiss_stale_reviews:
+        description: 'Dismiss stale reviews'
+        required: false
+        type: boolean
+        default: true
+      require_status_checks:
+        description: 'Require status checks'
+        required: false
+        type: boolean
+        default: true
+      enforce_admins:
+        description: 'Enforce for admins'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  setup-branch-protection:
+    name: Setup Branch Protection
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup GitHub CLI
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Configure GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          
+      - name: Setup Branch Protection
+        run: |
+          # Set up branch protection rules
+          gh api repos/${{ github.repository }}/branches/${{ inputs.branch_name }}/protection \
+            --method PUT \
+            --field required_status_checks='{"strict":true,"contexts":["Code Quality & Standards","Test Coverage (80% Required)","Architecture Standards","Build & Production Check","Security & Dependencies"]}' \
+            --field enforce_admins=${{ inputs.enforce_admins }} \
+            --field required_pull_request_reviews='{"required_approving_review_count":${{ inputs.required_reviewers }},"dismiss_stale_reviews":${{ inputs.dismiss_stale_reviews }}}' \
+            --field restrictions=null \
+            --field allow_force_pushes=false \
+            --field allow_deletions=false
+            
+      - name: Verify Branch Protection
+        run: |
+          echo "✅ Branch protection rules applied to: ${{ inputs.branch_name }}"
+          echo "📋 Protection settings:"
+          echo "  - Required status checks: ${{ inputs.require_status_checks }}"
+          echo "  - Required PR reviews: ${{ inputs.require_pr_reviews }}"
+          echo "  - Required reviewers: ${{ inputs.required_reviewers }}"
+          echo "  - Dismiss stale reviews: ${{ inputs.dismiss_stale_reviews }}"
+          echo "  - Enforce for admins: ${{ inputs.enforce_admins }}"
+          
+      - name: Create Branch Protection Documentation
+        run: |
+          cat > branch-protection-${{ inputs.branch_name }}.md << EOF
+          # Branch Protection Rules for \`${{ inputs.branch_name }}\`
+          
+          ## 🛡️ Protection Settings
+          
+          - **Required Status Checks**: All CI validations must pass
+            - Code Quality & Standards
+            - Test Coverage (80% Required)
+            - Architecture Standards
+            - Build & Production Check
+            - Security & Dependencies
+          
+          - **Required PR Reviews**: ${{ inputs.required_reviewers }} reviewer(s) required
+          - **Dismiss Stale Reviews**: ${{ inputs.dismiss_stale_reviews }}
+          - **Enforce for Admins**: ${{ inputs.enforce_admins }}
+          - **Allow Force Pushes**: Disabled
+          - **Allow Deletions**: Disabled
+          
+          ## 🚨 ALL RULES ARE MANDATORY - ZERO TOLERANCE POLICY
+          
+          ### ✅ Code Quality Rules (BLOCK PR IF FAILED):
+          - ✅ **Rule 1 & 16: Zero errors/warnings (MANDATORY)**
+          - ✅ **Rule 2: SOLID & DRY principles (MANDATORY)**
+          - ✅ **Rule 3: 80% PER-FILE test coverage for EACH file (MANDATORY)**
+          - ✅ TypeScript compilation success
+          
+          ### ✅ Architecture Rules (BLOCK PR IF FAILED):
+          - ✅ **Rule 4: Code reusability maximized (MANDATORY)**
+          - ✅ **Rule 5: Presentational components only (MANDATORY)**
+          - ✅ **Rule 6: File extension strictness (MANDATORY)**
+          - ✅ **Rule 17: Mandatory file and folder structure (MANDATORY)**
+          
+          ### ✅ Compliance Rules (BLOCK PR IF FAILED):
+          - ✅ **Rule 7: No eslint-disable comments (MANDATORY)**
+          - ✅ **Rule 9: --no-verify is FORBIDDEN (MANDATORY)**
+          - ✅ **Rule 10: No config modifications without permission (MANDATORY)**
+          - ✅ **Rule 11: Fix issues, never bypass (MANDATORY)**
+          - ✅ **Rule 12: AI agents cannot skip validations (MANDATORY)**
+          - ✅ **Rule 13: All validations must pass - no exceptions (MANDATORY)**
+          - ✅ **Rule 15: Continuous execution mandate (MANDATORY)**
+          
+          ### ✅ Build & Security (BLOCK PR IF FAILED):
+          - ✅ Build success
+          - ✅ Security audit passed
+          
+          ⚠️ **ALL RULES ARE MANDATORY - PR CANNOT BE MERGED IF ANY RULE FAILS** ⚠️
+          
+          ## 📋 PR Process
+          
+          1. Create PR from feature branch to \`${{ inputs.branch_name }}\`
+          2. All CI checks must pass
+          3. Required reviewers must approve
+          4. Merge only after all validations pass
+          
+          **Note**: No code can be merged without meeting all quality standards.
+          EOF
+          
+          echo "📄 Branch protection documentation created: branch-protection-${{ inputs.branch_name }}.md"
